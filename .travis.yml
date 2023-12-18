@@ -1,0 +1,17 @@
+language: generic
+sudo: required
+services:
+  - docker
+
+before_install: 
+  - docker build -t mlindemann/react-test -f ./client/Dockerfile.dev ./client
+
+script: 
+  - docker run -e CI=true mlindemann/react-test npm test
+
+after_success: 
+  - docker build -t mlindemann/multi-client ./client
+  - docker build -t mlindemann/multi-nginx ./nginx
+  - docker build -t mlindemann/multi-server ./server
+  - docker build -t mlindemann/multi-worker ./worker
+
